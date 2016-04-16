@@ -117,7 +117,7 @@ def message(msg='', dim=32, pos=None):
     Var.fontObj = pygame.font.Font('freesansbold.ttf', dim)
     Var.textSurfaceObj = Var.fontObj.render(msg, True, (255, 255, 255))
     Var.textRectObj = Var.textSurfaceObj.get_rect()
-    Var.textRectObj.center = (pos)
+    Var.textRectObj.center = pos
 
 def reset():
     global grille, snake, point
@@ -171,6 +171,8 @@ point = Point()
 point.spawn_point()
 
 while True:
+    frame_direction = snake.direction
+
     DISPLAYSURF.fill(BG)
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -179,14 +181,13 @@ while True:
 
         if event.type == pygame.KEYDOWN:
             if Var.GAME_OVER == False and Var.PAUSED == False:
-                direction = snake.direction
-                if (event.key == pygame.K_UP or event.key == pygame.K_z) and direction != "down":
+                if (event.key == pygame.K_UP or event.key == pygame.K_z) and frame_direction != "down":
                     snake.direction = "up"
-                elif (event.key == pygame.K_DOWN or event.key == pygame.K_s) and direction != "up":
+                elif (event.key == pygame.K_DOWN or event.key == pygame.K_s) and frame_direction != "up":
                     snake.direction = "down"
-                elif (event.key == pygame.K_LEFT or event.key == pygame.K_q) and direction != "right":
+                elif (event.key == pygame.K_LEFT or event.key == pygame.K_q) and frame_direction != "right":
                     snake.direction = "left"
-                elif (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and direction != "left":
+                elif (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and frame_direction != "left":
                     snake.direction = "right"
 
             if (event.key == pygame.K_SPACE or event.key == pygame.K_p) and Var.GAME_OVER == False:
