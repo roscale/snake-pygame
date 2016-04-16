@@ -111,6 +111,14 @@ def dessine():
             if grille.matrice[block_x][block_y] != ESPACE:
                 pygame.draw.rect(DISPLAYSURF, grille.matrice[block_x][block_y][1], (x, y, BLOCK_DIM, BLOCK_DIM))
 
+def message(msg='', dim=32, pos=None):
+    if pos is None:
+        pos = FENETRE_LONG // 2, FENETRE_LARG // 2
+    Var.fontObj = pygame.font.Font('freesansbold.ttf', dim)
+    Var.textSurfaceObj = Var.fontObj.render(msg, True, (255, 255, 255))
+    Var.textRectObj = Var.textSurfaceObj.get_rect()
+    Var.textRectObj.center = (pos)
+
 def reset():
     global grille, snake, point
     Var.FPS = 5
@@ -155,6 +163,7 @@ pygame.init()
 FPSCLOCK = pygame.time.Clock()
 DISPLAYSURF = pygame.display.set_mode((FENETRE_LONG, FENETRE_LARG))
 pygame.display.set_caption('Snake - Score: {}'.format(Var.SCORE))
+message() # Juste pour l'initialisation
 
 grille = Grille(GRILLE_LARG, GRILLE_LONG)
 snake = Snake()
@@ -184,22 +193,36 @@ while True:
                 if Var.PAUSED == False:
                     Var.PAUSED = True
                     pygame.display.set_caption('Snake - Score: {} (Paused)'.format(Var.SCORE))
+
                 else:
                     Var.PAUSED = False
                     pygame.display.set_caption('Snake - Score: {}'.format(Var.SCORE))
 
-            if event.key == pygame.K_r and Var.GAME_OVER == True:
-                reset()
+            if Var.GAME_OVER == True:
+                if event.key == pygame.K_r:
+                    reset()
+                elif event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
 
 
     if Var.GAME_OVER == False and Var.PAUSED == False:
         if snake.verif_pos() is True:
             snake.actualise_pos()
             snake.verif_point_mange()
-        dessine()
-        pygame.display.update()
+    dessine()
+
+    if Var.PAUSED == True:
+        message('Paused')
+        DISPLAYSURF.blit(Var.textSurfaceObj, Var.textRectObj)
 
     if Var.GAME_OVER == True:
+        message('Game Over')
+        DISPLAYSURF.blit(Var.textSurfaceObj, Var.textRectObj)
+        message('(appuyez [r] pour recommencer et [ESC] pour quitter)', 16, (FENETRE_LONG // 2, FENETRE_LARG // 2 + 30))
+        DISPLAYSURF.blit(Var.textSurfaceObj, Var.textRectObj)
+
         pygame.display.set_caption('Snake - Score: {} (Game Over)'.format(Var.SCORE))
 
+    pygame.display.update()
     FPSCLOCK.tick(Var.FPS)
