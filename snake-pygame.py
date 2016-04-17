@@ -75,16 +75,13 @@ class Snake:
 
 class Point:
     def spawn_point(self):
-        x = random.randint(1, grille.longueur - 2)
-        y = random.randint(1, grille.largeur - 2)
-
-        while grille.matrice[x][y] in OBSTACLES:      ### Au cas ou, si le point est dans le snake il se regénère
+        while True:      ### Au cas ou, si le point est dans le snake il se regénère
             x = random.randint(1, grille.longueur - 2)
             y = random.randint(1, grille.largeur - 2)
+            if grille.matrice[x][y] not in OBSTACLES:
+                break
 
-        self.pos = []
-        self.pos.append(x)
-        self.pos.append(y)
+        self.pos = [x, y]
         grille.matrice[x][y] = POINT
 
 
